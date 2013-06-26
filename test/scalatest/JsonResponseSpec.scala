@@ -14,7 +14,8 @@ class JsonResponseSpec extends FlatSpec {
 
   "A JsonResponse" should "be serialized" in {
     val jsonResp = new JsonResponse("success", "value1")
-    assert(jsonResp.toJson()== "{status:\"success\",data:\"value1\"}")
+    val repoString = jsonResp.toJson()
+    assert(repoString== "{status:\"success\",data:\"value1\"}")
   }
 
 }

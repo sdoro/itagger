@@ -7,7 +7,7 @@ resolvers += "Typesafe repository" at "http://repo.typesafe.com/typesafe/release
 // Use the Play sbt plugin for Play projects
 addSbtPlugin("play" % "sbt-plugin" % "2.1.1")
 
-libraryDependencies += "org.scalatest" % "scalatest_2.10" % "1.9.1" % "test"
+//addSbtPlugin( "org.scalatest" % "scalatest_2.10" % "1.9.1")
 
-libraryDependencies += "net.debasishg" % "sjson_2.8.0" % "0.8"
+addSbtPlugin( "net.debasishg" % "sjson_2.9.1" % "0.17")
 

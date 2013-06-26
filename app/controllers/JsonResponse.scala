@@ -1,11 +1,9 @@
 package controllers
 
-import play.api.libs.json.JsValue
-import play.api.libs.json.JsObject
-import play.api.libs.json.Json
-import play.api.libs.json.JsNull
+import play.api.libs.json._
 
-class JsonResponse(val _status:String, val _data: String){
+
+case class JsonResponse(val status:String, val data:String){
 
 	/**
 	 * success 
@@ -13,35 +11,19 @@ class JsonResponse(val _status:String, val _data: String){
 	 * error
 	 * 
 	 */
-	var	status: String = _status;
-	var data: String = _data;
-
+	var	_status: String = status;
+	var _data:String = data;
+ 	implicit private val  respoWrites = Json.writes[JsonResponse]
 	
 	def toJson(): String = {
-	  "fail"
-//	  Json.stringify(Json.toJson(this));
+//	  implicit private val StatusWrites = Json.writes[StatusUpdate]
+//	  val status = StatusUpdate(user = "pablo", update = "serialize this")
+//	  val json = Json.toJson(status)
+//	  
+	  val respo = new JsonResponse(_status, _data)
+	  val json = Json.toJson(respo)
+	  Json.stringify(json)
 	}
-	
-
-	def main(args: Array[String]) {
-  
-		Json.obj(
-  "users" -> Json.arr(
-    Json.obj(
-      "name" -> "bob",
-      "age" -> 31,
-      "email" -> "bob@gmail.com"  	  
-    ),
-    Json.obj(
-      "name" -> "kiki",
-      "age" -> 25,
-      "email" -> JsNull  	  
-    )
-  )
-)
-		
-	}
-	
 	
 }
 
