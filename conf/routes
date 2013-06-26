@@ -16,4 +16,13 @@ GET     /fake/:id              controllers.Application.fake(id: Long)
 
 
 # Display a user.
-GET   /users/:id          controllers.UsersController.show(id: Long)  
+# {username: vl, password }
+POST   /users/new        controllers.UsersController.create
+
+# {a:string, b:string, location:string,  }
+PUT   /users/:id        controllers.UsersController.update(id: Long) 
+
+
+
+
+#GET   /users/:id          controllers.UsersController.show(id: Long)  
