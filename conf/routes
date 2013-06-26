@@ -11,3 +11,9 @@ GET     /assets/*file               controllers.Assets.at(path="/public", file)
 
 # Add computer
 GET     /ping              controllers.Application.ping
+GET     /fake/:id              controllers.Application.fake(id: Long)
+
+
+
+# Display a user.
+GET   /users/:id          controllers.UsersController.show(id: Long)  
