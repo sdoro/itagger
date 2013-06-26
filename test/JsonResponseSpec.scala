@@ -1,9 +1,8 @@
 package test
 
-import org.specs2.mutable._
-import play.api.test._
-import play.api.test.Helpers._
-import controllers.JsonResponse
+import org.scalatest.FlatSpec
+
+
 
 
 
@@ -14,13 +13,13 @@ import controllers.JsonResponse
  * For more information, consult the wiki.
  */
 
-class JsonResponseSpec extends Specification {
+class JsonResponseSpec extends FlatSpec {
   
-  "JsonResponse" should {
-    
-    "transform to json" in {
-    	val jsonresponse = new JsonResponse("success", "value1")
-    	jsonresponse.toJson must equalTo("{status:\"success\", data:\"value1\" }")     
-    }    
-  }
+//  "JsonResponse" should {
+//    
+////    "transform to json" in {
+////    	val jsonresponse = new JsonResponse("success", "value1")
+////    	jsonresponse.toJson must equalTo("{status:\"success\", data:\"value1\" }")     
+////    }    
+//  }
 }
