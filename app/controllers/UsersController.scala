@@ -3,7 +3,8 @@ package controllers
 import play.api._
 import play.api.mvc._
 import play.api.libs.json.Json
-
+import play.api.libs.json.JsValue
+import models.User
 
 object UsersController extends Controller {
 
@@ -24,10 +25,26 @@ object UsersController extends Controller {
   //    
   //    }
 
-  def show(id: Long) = Action { request =>
-      Ok(Json.toJson(
-        Map("status" -> "OK", "message" -> ("Hello " + "name"))))
+  def create() = Action {
+    request =>
+      val body: AnyContent = request.body
+      val jsonBody: Option[JsValue] = body.asJson
+      val raw = body.asRaw
+      jsonBody.map { value =>
+        Ok(Json.toJson(
+          Map("status" -> "success",
+            "data" -> (Json.stringify(value)))))
+      }.getOrElse {
+        Ok(Json.toJson(
+          Map("status" -> "fail", "message" -> ("BadRequest"))))
+      }
+
   }
 
+  def show(id: Long) = Action { request =>
+
+    Ok(Json.toJson(
+      Map("status" -> "OK", "message" -> ("Hello " + "name"))))
+  }
 
 }
