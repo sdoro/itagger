@@ -8,7 +8,6 @@ import play.api.Play.current
 case class User(id: Long,
   username: String,
   deleted: Boolean = false) {
-
 }
 
 object User {
