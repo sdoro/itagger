@@ -19,16 +19,19 @@ class UsersSpec extends Specification {
   "Evolutions" should {
     "be applied without errors" in {
       running( FakeApplication( additionalConfiguration = Map( 
-    "db.default.driver" -> "org.sqlite.JDBC", 
-    "db.default.url"    -> "jdbc:sqlite:/D:/Download/hackathon/sandragon/test/scalaJUnitTest" ))){
-        User.create(new User(0,"milo"), 
+    "db.default.driver" -> "org.h2.Driver", 
+    "db.default.url"    -> "jdbc:h2:bin/db/test/h2",
+    "db.default.user"    -> "sa"))){
+        val numUser = User.all().count(p=>true)
+        
+        User.create(new User(0,"abdul"), 
             success=>{
               assert(true)
               }, 
             fail=>{
               assert(false)
             })
-//        assert(User.all().count(p=>true)>0)
+        assert(User.all().count(p=>true)==(numUser+1))
       }
       success
     }

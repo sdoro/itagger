@@ -13,21 +13,21 @@ case class User(id: Long,
 object User {
 
   val user = {
-    get[Long]("id") ~
-      get[String]("username") map {
-        case id ~ username => User(id, username)
+    get[Long]("id") ~ get[String]("username") ~ get[Boolean]("deleted") map {
+        case id ~ username ~ deleted => User(id, username, deleted)
       }
   }
 
   def all(): List[User] = DB.withConnection {
-    implicit c => SQL("select * from user where deleted='0'").as(user *)
+    implicit c => SQL("select * from user where deleted=FALSE").as(user *)
   }
 
   def create(user: User, success: User => Unit, fail: Exception => Unit) {
     try {
       DB.withConnection { implicit c =>
-        SQL("insert into user (username) values ({username})").on(
-          'username -> user.username).executeUpdate()
+        SQL("insert into user (username, deleted) values ({username},FALSE)")
+        .on('username -> user.username)
+        .executeUpdate()
       }
       success(user)
     } catch {
@@ -40,7 +40,7 @@ object User {
   def delete(id: Long, success: Long => Unit, fail: Exception => Unit) {
     try {
       DB.withConnection { implicit c =>
-        SQL("update user set deleted='0' where id = {id}").on(
+        SQL("update user set deleted=FALSE where id = {id}").on(
           'id -> id).executeUpdate()
       }
       success(id)
