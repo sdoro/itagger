@@ -2,9 +2,9 @@
  
 # --- !Ups
 
-CREATE SEQUENCE user_id_seq;
+CREATE SEQUENCE my_user_id_seq;
 CREATE TABLE user (
-    id integer NOT NULL DEFAULT nextval('user_id_seq'),
+    id integer NOT NULL DEFAULT nextval('my_user_id_seq'),
     username varchar(255),
     deleted boolean
 );
