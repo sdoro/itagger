@@ -47,13 +47,14 @@ object UsersController extends Controller {
       Map("status" -> "OK", "message" -> ("Hello " + "name"))))
   }
 
-  parse.json
+  //parse.json
 
   def create() = Action {
     request =>
       val body: AnyContent = request.body
       val jsonBody: Option[JsValue] = body.asJson
       val raw = body.asRaw
+      //jsonBody.get
       jsonBody.map { value =>
         Ok(Json.toJson(
           Map("status" -> "success",
@@ -65,6 +66,16 @@ object UsersController extends Controller {
 
   }
 
+  
+//  case class User(id: Long, username: String, long:Double=0.0, lat:Double=0.0, deleted: Boolean = false) {}
+//  val jsv:JsValue = Json.toJson("{\"latitude\":\"15.5439025839\",\"longitude\":\"13.5439025839\",\"userid\":\"Fabio\",\"password\":\"pizza123\"}")
+
+  //parse[User]("""{"id":1,"name":"Coda"}""")
+  
+//val ur: Option[User] = jsv.asOpt[User]
+
+
+  
   //  def sayHello = Action(parse.json) { request =>
   //  (request.body \ "name").asOpt[String].map { name =>
   //    Ok(toJson(
