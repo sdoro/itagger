@@ -7,14 +7,18 @@ import play.api.Play.current
 
 case class User(id: Long,
   username: String,
+  long:Double=0.0,
+  lat:Double=0.0,
   deleted: Boolean = false) {
 }
 
 object User {
 
   val user = {
-    get[Long]("id") ~ get[String]("username") ~ get[Boolean]("deleted") map {
-        case id ~ username ~ deleted => User(id, username, deleted)
+    get[Long]("id") ~ get[String]("username") ~ 
+    get[Double]("long") ~ get[Double]("lat") ~ 
+    get[Boolean]("deleted") map {
+        case id ~ username ~ long ~ lat ~ deleted => User(id, username, long,lat,deleted)
       }
   }
 
@@ -25,8 +29,10 @@ object User {
   def create(user: User, success: User => Unit, fail: Exception => Unit) {
     try {
       DB.withConnection { implicit c =>
-        SQL("insert into user (username, deleted) values ({username},FALSE)")
+        SQL("insert into user (username, long, lat, deleted) values ({username},{long},{lat},FALSE)")
         .on('username -> user.username)
+        .on('long -> user.long)
+        .on('lat -> user.lat)
         .executeUpdate()
       }
       success(user)
