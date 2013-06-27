@@ -6,6 +6,8 @@ CREATE SEQUENCE my_user_id_seq;
 CREATE TABLE my_user (
     id integer NOT NULL DEFAULT nextval('my_user_id_seq'),
     username varchar(255),
+    lat varchar(255),
+    lngt varchar(255),
     deleted boolean
 );
  
