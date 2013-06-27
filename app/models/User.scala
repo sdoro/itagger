@@ -23,13 +23,13 @@ object User {
   }
 
   def all(): List[User] = DB.withConnection {
-    implicit c => SQL("select * from user where deleted=FALSE").as(user *)
+    implicit c => SQL("select * from my_user where deleted=FALSE").as(user *)
   }
 
   def create(user: User, success: User => Unit, fail: Exception => Unit) {
     try {
       DB.withConnection { implicit c =>
-        SQL("insert into user (username, long, lat, deleted) values ({username},{long},{lat},FALSE)")
+        SQL("insert into my_user (username, long, lat, deleted) values ({username},{long},{lat},FALSE)")
         .on('username -> user.username)
         .on('long -> user.long)
         .on('lat -> user.lat)
@@ -46,7 +46,7 @@ object User {
   def delete(id: Long, success: Long => Unit, fail: Exception => Unit) {
     try {
       DB.withConnection { implicit c =>
-        SQL("update user set deleted=FALSE where id = {id}").on(
+        SQL("update my_user set deleted=FALSE where id = {id}").on(
           'id -> id).executeUpdate()
       }
       success(id)

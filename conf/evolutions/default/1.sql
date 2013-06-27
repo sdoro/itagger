@@ -1,4 +1,4 @@
-# Users schema
+# my_users schema
  
 # --- !Ups
 
