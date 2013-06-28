@@ -132,9 +132,8 @@ class UsersSpec extends Specification {
     }
 
     "calc distance between 2 points" in {
-
-      val user1 = new User(0, "u1", 38.898556.toString, 56.432.toString)
-      val user2 = new User(0, "u2", -45.8985566.toString, -31.432.toString)
+      val user1 = new User(id=0, username="u1", lat=36.12.toString, lngt= -86.67.toString)
+      val user2 = new User(id=0, username="u2", lat=33.94.toString, lngt= -118.40.toString)
       var calcDist: Double = 0.0
       User.calcDistInMt(user1, user2,
         result => {
@@ -143,8 +142,8 @@ class UsersSpec extends Specification {
         fail => {
           assert(false)
         })
-        val estimatedValue = (12848.696 * 1000)
-//        calcDist should be equalTo estimatedValue//(12848.696 * 1000)
+        val estimatedValueInMt = 2887259.9506071106
+        calcDist must be equalTo estimatedValueInMt//(12848.696 * 1000)
     }
 
   }

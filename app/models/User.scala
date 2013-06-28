@@ -104,15 +104,19 @@ object User {
   }
 
   def calcDistInMt(user1: User, user2: User, result: Double => Unit, fail: Exception => Unit) {
-    try{
-      var R = 6371.0; // km (change this constant to get miles)
-      var dLon = (user2.lngt.toDouble-user1.lngt.toDouble) * Math.PI / 180;
-      var dLat = (user2.lat.toDouble- user1.lat.toDouble) * Math.PI / 180;
-      var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-		Math.cos(user1.lat.toDouble * Math.PI / 180 ) * Math.cos(user2.lat.toDouble * Math.PI / 180 ) *
-		Math.sin(dLon/2) * Math.sin(dLon/2);
-      var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-      var d = R * c*1000;
+    try {
+      val lat1 = user1.lat.toDouble
+      val lat2 = user2.lat.toDouble
+      val dLat = (lat2 - lat1).toRadians
+
+      val lon1 = user1.lngt.toDouble
+      val lon2 = user2.lngt.toDouble
+      val dLon = (lon2 - lon1).toRadians
+
+      val a = Math.pow(Math.sin(dLat / 2), 2) + Math.pow(Math.sin(dLon / 2), 2) * Math.cos(lat1.toRadians) * Math.cos(lat2.toRadians)
+      val c = 2 * Math.asin(Math.sqrt(a))
+      val R = 6372.8 //radius in km
+      val d = R * c * 1000
       result(d)
     } catch {
       case ex: Exception => {
