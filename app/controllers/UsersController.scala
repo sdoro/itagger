@@ -70,41 +70,59 @@ object UsersController extends Controller {
   def create() = Action {
     request =>
       val (user, res) = analyzeRequest(request)
-    if (res) {
-      Ok(Json.toJson(
-        Map("status" -> "success",
-          "data" -> (user.username))))
-    } else {
-      Ok(Json.toJson(
-        Map("status" -> "fail", "message" -> ("BadRequest"))))
-    }
+      if (res) {
+        Ok(Json.toJson(
+          Map("status" -> "success",
+            "data" -> (user.username))))
+      } else {
+        Ok(Json.toJson(
+          Map("status" -> "fail", "message" -> ("BadRequest"))))
+      }
   }
 
-  
-  def matching(username:String) = Action {
+  def matching(username: String) = Action {
     request =>
-          val (user, res) = analyzeRequest(request)
-          val neighborhood = User.getNeighborhood(); 
-          val list = new ArrayBuffer(3)
-          
-          val jsonArray = Json.toJson(list)
-          
-      
-          Ok(Json.toJson(
-      Map("status" -> "OK", "message" -> (jsonArray ))))
-  }
-  
 
-  
+      val body: AnyContent = request.body
+      val jsonBody: Option[JsValue] = body.asJson
+      val _username: String = jsonBody.get.\("username").toString
+      val _id: Long = jsonBody.get.\("id").toString.toLong
+      val _lngt: String = jsonBody.get.\("lngt").toString
+      val _lat: String = jsonBody.get.\("lat").toString
+      val _maxDistInMt: Long = jsonBody.get.\("maxDistInMt").toString.toLong
+
+      val user: User = new User(id = _id, username = _username, lngt = _lngt, lat = _lat)
+
+      var res: Boolean = false;
+      User.createOrUpdate(user,
+        success => {
+          res = true
+        },
+        fail => {
+          res = false
+        })
+
+      if (res == false) {
+        Ok(Json.toJson(
+          Map("status" -> "fail", "message" -> ("BadRequest"))))
+      }
+
+      val neighborhood = User.getNeighbourList(user, _maxDistInMt, result => {}, fail => {})
+      val jsonArray = Json.toJson(neighborhood)
+
+      Ok(jsonArray)
+
+  }
+
   private def analyzeRequest(request: play.api.mvc.Request[play.api.mvc.AnyContent]): (models.User, Boolean) = {
     val body: AnyContent = request.body
     val jsonBody: Option[JsValue] = body.asJson
-    val _username:String = jsonBody.get.\("username").toString
-    val _id:Long = jsonBody.get.\("id").toString.toLong
-    val _lngt:String = jsonBody.get.\("lngt").toString
-    val _lat:String = jsonBody.get.\("lat").toString
-    
-    val user:User = new User(id=_id, username= _username, lngt = _lngt, lat = _lat)
+    val _username: String = jsonBody.get.\("username").toString
+    val _id: Long = jsonBody.get.\("id").toString.toLong
+    val _lngt: String = jsonBody.get.\("lngt").toString
+    val _lat: String = jsonBody.get.\("lat").toString
+
+    val user: User = new User(id = _id, username = _username, lngt = _lngt, lat = _lat)
 
     var res: Boolean = false;
     User.createOrUpdate(user,
@@ -116,4 +134,4 @@ object UsersController extends Controller {
       })
     (user, res)
   }
- }
+}

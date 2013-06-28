@@ -63,7 +63,7 @@ object User {
     }
   }
 
-  }
+  
   def update(user: User, success: User => Unit, fail: Exception => Unit) {
     try {
       DB.withConnection { implicit c =>
