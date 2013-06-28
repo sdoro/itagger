@@ -5,6 +5,8 @@ import anorm._
 import anorm.SqlParser._
 import play.api.Play.current
 import org.omg.CORBA.UserException
+import java.util.ArrayList
+import scala.collection.mutable.ArrayBuffer
 
 case class User(id: Long,
   username: String,
@@ -42,13 +44,6 @@ object User {
     }
   }
 
-  def getNeighborhood() : Array[User] = {
-    
-    var z = new Array[User](3)
-    z
-  }
-  
-    
   def createOrUpdate(user: User, success: User => Unit, fail: Exception => Unit) {
     try {
       val userExists = User.all()
@@ -67,9 +62,8 @@ object User {
       }
     }
   }
-  
-  
-  
+
+  }
   def update(user: User, success: User => Unit, fail: Exception => Unit) {
     try {
       DB.withConnection { implicit c =>
@@ -111,9 +105,33 @@ object User {
     }
   }
 
-  def calculateMatching(id: Long, success: User => Unit, fail: Exception => Unit) {
+  def getNeighbourList(user: User, maxDistInMt: Double, result: ArrayBuffer[String] => Unit, fail: Exception => Unit): ArrayBuffer[String] = {
+    val output = new ArrayBuffer[String]
     try {
-      throw new Exception("fail")
+      result(output)
+    } catch {
+      case ex: Exception => {
+        fail(ex)
+      }
+    }
+    output
+  }
+
+  def calcDistInMt(user1: User, user2: User, result: Double => Unit, fail: Exception => Unit) {
+    try {
+      val lat1 = user1.lat.toDouble
+      val lat2 = user2.lat.toDouble
+      val dLat = (lat2 - lat1).toRadians
+
+      val lon1 = user1.lngt.toDouble
+      val lon2 = user2.lngt.toDouble
+      val dLon = (lon2 - lon1).toRadians
+
+      val a = Math.pow(Math.sin(dLat / 2), 2) + Math.pow(Math.sin(dLon / 2), 2) * Math.cos(lat1.toRadians) * Math.cos(lat2.toRadians)
+      val c = 2 * Math.asin(Math.sqrt(a))
+      val R = 6372.8 //radius in km
+      val d = R * c * 1000
+      result(d)
     } catch {
       case ex: Exception => {
         fail(ex)
