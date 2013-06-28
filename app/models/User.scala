@@ -7,6 +7,7 @@ import play.api.Play.current
 import org.omg.CORBA.UserException
 import java.util.ArrayList
 import scala.collection.mutable.ArrayBuffer
+import scala.collection.mutable.ListBuffer
 
 case class User(id: Long,
   username: String,
@@ -105,9 +106,22 @@ object User {
     }
   }
 
-  def getNeighbourList(user: User, maxDistInMt: Double, result: ArrayBuffer[String] => Unit, fail: Exception => Unit): ArrayBuffer[String] = {
-    val output = new ArrayBuffer[String]
+  def getNeighbourList(user: User, users:List[User], maxDistInMt: Double, result: ListBuffer[String] => Unit, fail: Exception => Unit): ListBuffer[String] = {
+    val output = new ListBuffer[String]
     try {
+      users.foreach(u=> {
+        var dist = maxDistInMt+1
+        User.calcDistInMt(user, u, 
+            result=>{
+              dist=result
+            } , 
+            fail=>{
+              
+            })
+        if(dist<=maxDistInMt){
+          output.append(u.username)
+        }
+      })
       result(output)
     } catch {
       case ex: Exception => {
