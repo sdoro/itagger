@@ -112,8 +112,8 @@ object User {
       users.foreach(u=> {
         var dist = maxDistInMt+1
         User.calcDistInMt(user, u, 
-            result=>{
-              dist=result
+            calcDist=>{
+              dist=calcDist
             } , 
             fail=>{
               
