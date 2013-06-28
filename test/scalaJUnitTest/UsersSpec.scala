@@ -14,6 +14,7 @@ import controllers.Application
 import play.api.mvc._
 import play.libs.Scala
 import scala.util.Random
+import scala.collection.mutable.ListBuffer
 
 /**
  * Add your spec here.
@@ -146,5 +147,15 @@ class UsersSpec extends Specification {
         calcDist must be equalTo estimatedValueInMt//(12848.696 * 1000)
     }
 
+     "calc neighbours within N meters" in {
+       val users = new ListBuffer[User]
+       users.append(new User(id=0, username="u1", lat=33.94231.toString, lngt= -118.40121.toString))
+       users.append(new User(id=0, username="u2", lat=33.94232.toString, lngt= -118.40122.toString))
+       users.append(new User(id=0, username="u3", lat=33.94233.toString, lngt= -118.40123.toString))
+       users.append(new User(id=0, username="u4", lat=33.94234.toString, lngt= -118.40124.toString))
+       users.append(new User(id=0, username="u5", lat=33.94235.toString, lngt= -118.40125.toString))
+       assert(false)
+     }
+    
   }
 }
