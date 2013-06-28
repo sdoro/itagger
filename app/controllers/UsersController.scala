@@ -80,7 +80,7 @@ object UsersController extends Controller {
       }
   }
 
-  def matching(username: String) = Action {
+  def matching() = Action {
     request =>
 
       val body: AnyContent = request.body
@@ -89,7 +89,7 @@ object UsersController extends Controller {
       val _id: Long = jsonBody.get.\("id").toString.toLong
       val _lngt: String = jsonBody.get.\("lngt").toString
       val _lat: String = jsonBody.get.\("lat").toString
-      val _maxDistInMt: Long = jsonBody.get.\("maxDistInMt").toString.toLong
+      val _maxDistInMt: Long = jsonBody.get.\("max").toString.toLong
 
       val user: User = new User(id = _id, username = _username, lngt = _lngt, lat = _lat)
 
@@ -107,7 +107,7 @@ object UsersController extends Controller {
           Map("status" -> "fail", "message" -> ("BadRequest"))))
       }
 
-      val neighborhood = User.getNeighbourList(user, _maxDistInMt, result => {}, fail => {})
+      val neighborhood = User.getNeighbourList(user, User.all, _maxDistInMt, result => {}, fail => {})
       val jsonArray = Json.toJson(neighborhood)
 
       Ok(jsonArray)
