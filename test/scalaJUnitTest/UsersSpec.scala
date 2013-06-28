@@ -154,7 +154,15 @@ class UsersSpec extends Specification {
        users.append(new User(id=0, username="u3", lat=33.94233.toString, lngt= -118.40123.toString))
        users.append(new User(id=0, username="u4", lat=33.94234.toString, lngt= -118.40124.toString))
        users.append(new User(id=0, username="u5", lat=33.94235.toString, lngt= -118.40125.toString))
-       assert(false)
+       
+       val user = users(2)
+       
+       val output = User.getNeighbourList(user, users.toList, 10, 
+           result=>{
+             assert(result.count(p=>true)>0)
+           },
+           fail=>{})
+       
      }
     
   }
