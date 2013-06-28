@@ -5,8 +5,12 @@ import play.api.mvc._
 import play.api.libs.json.Json
 import views.html.defaultpages.badRequest
 import play.api.libs.json.JsValue
+import models.User
+import scala.collection.mutable.ArrayBuffer
 
 object UsersController extends Controller {
+
+  implicit val userFormat = Json.format[User]
 
   //  def show(id: Long) = Action {
   ////    User.findById(id).map {
@@ -27,19 +31,28 @@ object UsersController extends Controller {
 
   def update(id: Long) = Action {
     request =>
-      val myId: Long = id
       val body: AnyContent = request.body
       val jsonBody: Option[JsValue] = body.asJson
-      val raw = body.asRaw
-      jsonBody.map { value =>
+      val user = jsonBody.get.as[User]
+      var res: Boolean = false;
+
+      //User.update(user, success, fail)
+
+      User.createOrUpdate(user,
+        success => {
+          res = true
+        },
+        fail => {
+          res = false
+        })
+      if (res) {
         Ok(Json.toJson(
           Map("status" -> "success",
-            "data" -> (Json.stringify(value)))))
-      }.getOrElse {
+            "data" -> (user.username))))
+      } else {
         Ok(Json.toJson(
           Map("status" -> "fail", "message" -> ("BadRequest"))))
       }
-
   }
 
   def show(id: Long) = Action { request =>
@@ -49,58 +62,58 @@ object UsersController extends Controller {
 
   //parse.json
 
+  //val json = Json.parse("""{"username":"myfile.avi", "id":12345, "lngt":"qua", "lat":"diqui", "deleted": false}""") // Your WS result
+  //
+  //
+  //val user = json.as[User]
+
   def create() = Action {
     request =>
-      val body: AnyContent = request.body
-      val jsonBody: Option[JsValue] = body.asJson
-      val raw = body.asRaw
-      //jsonBody.get
-      jsonBody.map { value =>
-        Ok(Json.toJson(
-          Map("status" -> "success",
-            "data" -> (Json.stringify(value)))))
-      }.getOrElse {
-        Ok(Json.toJson(
-          Map("status" -> "fail", "message" -> ("BadRequest"))))
-      }
-
+      val (user, res) = analyzeRequest(request)
+    if (res) {
+      Ok(Json.toJson(
+        Map("status" -> "success",
+          "data" -> (user.username))))
+    } else {
+      Ok(Json.toJson(
+        Map("status" -> "fail", "message" -> ("BadRequest"))))
+    }
   }
 
   
-//  case class User(id: Long, username: String, long:Double=0.0, lat:Double=0.0, deleted: Boolean = false) {}
-//  val jsv:JsValue = Json.toJson("{\"latitude\":\"15.5439025839\",\"longitude\":\"13.5439025839\",\"userid\":\"Fabio\",\"password\":\"pizza123\"}")
-
-  //parse[User]("""{"id":1,"name":"Coda"}""")
+  def matching(username:String) = Action {
+    request =>
+          val (user, res) = analyzeRequest(request)
+          val neighborhood = User.getNeighborhood(); 
+          val list = new ArrayBuffer(3)
+          
+          val jsonArray = Json.toJson(list)
+          
+      
+          Ok(Json.toJson(
+      Map("status" -> "OK", "message" -> (jsonArray ))))
+  }
   
-//val ur: Option[User] = jsv.asOpt[User]
-
 
   
-  //  def sayHello = Action(parse.json) { request =>
-  //  (request.body \ "name").asOpt[String].map { name =>
-  //    Ok(toJson(
-  //      Map("status" -> "OK", "message" -> ("Hello " + name))
-  //    ))
-  //  }.getOrElse {
-  //    BadRequest(toJson(
-  //      Map("status" -> "KO", "message" -> "Missing parameter [name]")
-  //    ))
-  //  }
-  //}
+  private def analyzeRequest(request: play.api.mvc.Request[play.api.mvc.AnyContent]): (models.User, Boolean) = {
+    val body: AnyContent = request.body
+    val jsonBody: Option[JsValue] = body.asJson
+    val _username:String = jsonBody.get.\("username").toString
+    val _id:Long = jsonBody.get.\("id").toString.toLong
+    val _lngt:String = jsonBody.get.\("lngt").toString
+    val _lat:String = jsonBody.get.\("lat").toString
+    
+    val user:User = new User(id=_id, username= _username, lngt = _lngt, lat = _lat)
 
-  //  def create() = Action {
-  //    request =>
-  //      val body: AnyContent = request.body
-  //      val jsonBody: Option[JsValue] = body.asJson
-  //
-  //      jsonBody.map { value =>
-  //        Ok(Json.toJson(
-  //          Map("status" -> "success", "data" -> (Json.stringify(value)))))
-  //      }.getOrElse {
-  //        Ok(Json.toJson(
-  //          Map("status" -> "fail", "message" -> ("BadRequest"))))
-  //      }
-  //
-  //  }
-
-}
+    var res: Boolean = false;
+    User.createOrUpdate(user,
+      success => {
+        res = true
+      },
+      fail => {
+        res = false
+      })
+    (user, res)
+  }
+ }

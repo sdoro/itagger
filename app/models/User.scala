@@ -10,8 +10,7 @@ case class User(id: Long,
   username: String,
   lngt: String = "",
   lat: String = "",
-  deleted: Boolean = false) {
-}
+  deleted: Boolean = false)
 
 object User {
   val user = {
@@ -43,6 +42,13 @@ object User {
     }
   }
 
+  def getNeighborhood() : Array[User] = {
+    
+    var z = new Array[User](3)
+    z
+  }
+  
+    
   def createOrUpdate(user: User, success: User => Unit, fail: Exception => Unit) {
     try {
       val userExists = User.all()
@@ -50,10 +56,9 @@ object User {
       if (userExists) {
         val userFound = User.all().filter(p => p.username.equalsIgnoreCase(user.username))(0)
         val userUpdated = userFound.copy(
-            lat = userFound.lat, lngt = userFound.lngt
-            )
+          lat = userFound.lat, lngt = userFound.lngt)
         User.update(userUpdated, success, fail)
-      }else{
+      } else {
         User.create(user, success, fail)
       }
     } catch {
@@ -61,15 +66,17 @@ object User {
         fail(ex)
       }
     }
-
   }
-   def update(user: User, success: User => Unit, fail: Exception => Unit) {
+  
+  
+  
+  def update(user: User, success: User => Unit, fail: Exception => Unit) {
     try {
       DB.withConnection { implicit c =>
         SQL("update my_user set lat={lat}, lngt={lngt} where id = {id}").on(
           'id -> user.id,
-          'lat-> user.lat,
-          'lngt-> user.lngt)
+          'lat -> user.lat,
+          'lngt -> user.lngt)
           .executeUpdate()
       }
       success(user)
@@ -79,8 +86,7 @@ object User {
       }
     }
   }
-  
-  
+
   def delete(id: Long, success: Long => Unit, fail: Exception => Unit) {
     try {
       DB.withConnection { implicit c =>

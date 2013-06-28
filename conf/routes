@@ -17,10 +17,12 @@ GET     /fake/:id              controllers.Application.fake(id: Long)
 
 # Display a user.
 # {username: vl, password }
-POST   /users/new        controllers.UsersController.create
+POST   /users/new                       controllers.UsersController.create
+
+GET  /users/:username/matching          controllers.UsersController.matching(username: String)
 
 # {a:string, b:string, location:string,  }
-PUT   /users/:id        controllers.UsersController.update(id: Long) 
+#PUT   /users/:username/matching        controllers.UsersController.update(username: String) 
 
 
 
