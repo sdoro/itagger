@@ -50,10 +50,9 @@ object User {
       if (userExists) {
         val userFound = User.all().filter(p => p.username.equalsIgnoreCase(user.username))(0)
         val userUpdated = userFound.copy(
-            lat = userFound.lat, lngt = userFound.lngt
-            )
+          lat = userFound.lat, lngt = userFound.lngt)
         User.update(userUpdated, success, fail)
-      }else{
+      } else {
         User.create(user, success, fail)
       }
     } catch {
@@ -63,13 +62,13 @@ object User {
     }
 
   }
-   def update(user: User, success: User => Unit, fail: Exception => Unit) {
+  def update(user: User, success: User => Unit, fail: Exception => Unit) {
     try {
       DB.withConnection { implicit c =>
         SQL("update my_user set lat={lat}, lngt={lngt} where id = {id}").on(
           'id -> user.id,
-          'lat-> user.lat,
-          'lngt-> user.lngt)
+          'lat -> user.lat,
+          'lngt -> user.lngt)
           .executeUpdate()
       }
       success(user)
@@ -79,8 +78,7 @@ object User {
       }
     }
   }
-  
-  
+
   def delete(id: Long, success: Long => Unit, fail: Exception => Unit) {
     try {
       DB.withConnection { implicit c =>
@@ -105,9 +103,17 @@ object User {
     }
   }
 
-  def calculateMatching(id: Long, success: User => Unit, fail: Exception => Unit) {
-    try {
-      throw new Exception("fail")
+  def calcDistInMt(user1: User, user2: User, result: Double => Unit, fail: Exception => Unit) {
+    try{
+      var R = 6371.0; // km (change this constant to get miles)
+      var dLon = (user2.lngt.toDouble-user1.lngt.toDouble) * Math.PI / 180;
+      var dLat = (user2.lat.toDouble- user1.lat.toDouble) * Math.PI / 180;
+      var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+		Math.cos(user1.lat.toDouble * Math.PI / 180 ) * Math.cos(user2.lat.toDouble * Math.PI / 180 ) *
+		Math.sin(dLon/2) * Math.sin(dLon/2);
+      var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+      var d = R * c*1000;
+      result(d)
     } catch {
       case ex: Exception => {
         fail(ex)

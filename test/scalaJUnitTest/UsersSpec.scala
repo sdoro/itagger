@@ -62,7 +62,7 @@ class UsersSpec extends Specification {
       success
     }
 
-     "update without errors" in {
+    "update without errors" in {
       running(FakeApplication(additionalConfiguration = Map(
         "db.default.driver" -> "org.h2.Driver",
         "db.default.url" -> "jdbc:h2:bin/db/test/h2",
@@ -83,7 +83,7 @@ class UsersSpec extends Specification {
         assert(User.all().count(p => true) == (numUser))
       }
     }
-    
+
     "createdOrUpdated update without errors" in {
       running(FakeApplication(additionalConfiguration = Map(
         "db.default.driver" -> "org.h2.Driver",
@@ -130,5 +130,22 @@ class UsersSpec extends Specification {
       }
       success
     }
+
+    "calc distance between 2 points" in {
+
+      val user1 = new User(0, "u1", 38.898556.toString, 56.432.toString)
+      val user2 = new User(0, "u2", -45.8985566.toString, -31.432.toString)
+      var calcDist: Double = 0.0
+      User.calcDistInMt(user1, user2,
+        result => {
+          calcDist = result
+        },
+        fail => {
+          assert(false)
+        })
+        val estimatedValue = (12848.696 * 1000)
+//        calcDist should be equalTo estimatedValue//(12848.696 * 1000)
+    }
+
   }
 }
