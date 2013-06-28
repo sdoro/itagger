@@ -5,6 +5,8 @@ import anorm._
 import anorm.SqlParser._
 import play.api.Play.current
 import org.omg.CORBA.UserException
+import java.util.ArrayList
+import scala.collection.mutable.ArrayBuffer
 
 case class User(id: Long,
   username: String,
@@ -101,6 +103,18 @@ object User {
         fail(ex)
       }
     }
+  }
+
+  def getNeighbourList(user: User, maxDistInMt: Double, result: ArrayBuffer[String] => Unit, fail: Exception => Unit): ArrayBuffer[String] = {
+    val output = new ArrayBuffer[String]
+    try {
+      result(output)
+    } catch {
+      case ex: Exception => {
+        fail(ex)
+      }
+    }
+    output
   }
 
   def calcDistInMt(user1: User, user2: User, result: Double => Unit, fail: Exception => Unit) {
