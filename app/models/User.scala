@@ -106,8 +106,8 @@ object User {
     }
   }
 
-  def getNeighbourList(user: User, users:List[User], maxDistInMt: Double, result: ListBuffer[String] => Unit, fail: Exception => Unit): ListBuffer[String] = {
-    val output = new ListBuffer[String]
+  def getNeighbourList(user: User, users:List[User], maxDistInMt: Double, result: ListBuffer[User] => Unit, fail: Exception => Unit): ListBuffer[User] = {
+    val output = new ListBuffer[User]
     try {
       users.foreach(u=> {
         var dist = maxDistInMt+1
@@ -119,7 +119,7 @@ object User {
               
             })
         if(dist<=maxDistInMt){
-          output.append(u.username)
+          output.append(u) //only u
         }
       })
       result(output)

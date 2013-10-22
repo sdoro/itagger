@@ -3,6 +3,8 @@ package controllers
 import play.api._
 import play.api.mvc._
 import play.api.libs.json.Json
+import play.api.libs.json._
+
 import views.html.defaultpages.badRequest
 import play.api.libs.json.JsValue
 import models.User
@@ -110,7 +112,14 @@ object UsersController extends Controller {
       val neighborhood = User.getNeighbourList(user, User.all, _maxDistInMt, result => {}, fail => {})
       val jsonArray = Json.toJson(neighborhood)
 
-      Ok(jsonArray)
+      val jsonObject = Json.toJson(
+        Map(
+          "data" -> jsonArray,
+          "message" -> Json.toJson("ciao")
+        )
+      )
+
+      Ok(jsonObject)
 
   }
 
