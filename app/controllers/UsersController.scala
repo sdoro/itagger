@@ -115,7 +115,7 @@ object UsersController extends Controller {
       val jsonObject = Json.toJson(
         Map(
           "data" -> jsonArray,
-          "message" -> Json.toJson("ciao")
+          "message" -> Json.toJson(sys.env.get("MESSAGE"))
         )
       )
 
