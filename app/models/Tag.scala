@@ -53,7 +53,7 @@ object Tag {
       if (tagExists) {
         val tagFound = Tag.all().filter(p => p.tagname.equalsIgnoreCase(tag.tagname))(0)
         val tagUpdated = tagFound.copy(
-          lat = tagFound.lat, lngt = tagFound.lngt)
+          lat = tag.lat, lngt = tag.lngt)
         Tag.update(tagUpdated, success, fail)
       } else {
         Tag.create(tag, success, fail)
@@ -68,7 +68,7 @@ object Tag {
   def update(tag: Tag, success: Tag => Unit, fail: Exception => Unit) {
     try {
       DB.withConnection { implicit c =>
-        SQL("update my_tag set lat={lat}, lngt={lngt} where id = {id}").on(
+        SQL("update tags set lat={lat}, lngt={lngt} where id = {id}").on(
           'id -> tag.id,
           'lat -> tag.lat,
           'lngt -> tag.lngt)
