@@ -10,8 +10,8 @@ GET     /assets/*file               controllers.Assets.at(path="/public", file)
 
 
 # Add computer
-GET     /ping              controllers.Application.ping
-GET     /fake/:id              controllers.Application.fake(id: Long)
+#GET     /ping              controllers.Application.ping
+#GET     /fake/:id              controllers.Application.fake(id: Long)
 
 
 
@@ -20,6 +20,8 @@ POST   /users/new                       controllers.UsersController.create
 POST  /users/matching          controllers.UsersController.matching
 
 
+POST  /tags          controllers.TagsController.create
+GET   /tags          controllers.TagsController.getNeighbourList
 
 
 
