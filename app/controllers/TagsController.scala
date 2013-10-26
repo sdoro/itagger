@@ -42,9 +42,6 @@ object TagsController extends Controller {
           Map("status" -> "fail", "message" -> ("BadRequest"))))
       }
 
-      //val neighborhood = Tag.getNeighbourList(tag, Tag.all, _maxDistInMt, result => {}, fail => {})
-      //val jsonArray = Json.toJson(neighborhood)
-
       val jsonObject = Json.toJson(
         Map(
           //"data" -> jsonArray,
@@ -56,17 +53,14 @@ object TagsController extends Controller {
 
   }
   
-  
-  def getNeighbourList() = Action {
+    def getNeighbourList() = Action {
     request =>
 
-      val body: AnyContent = request.body
-      val jsonBody: Option[JsValue] = body.asJson
-      val _lngt: String = jsonBody.get.\("lngt").toString
-      val _lat: String = jsonBody.get.\("lat").toString
-      val _maxDistInMt: Long = jsonBody.get.\("max").toString.toLong
-     
-      val neighborhood = Tag.getNeighbourList(_lat.toDouble, _lngt.toDouble, _maxDistInMt, result => {}, fail => {})
+      val _maxDistInMt: String   = request.getQueryString("max").getOrElse("10000");
+      val _lngt: String          = request.getQueryString("lngt").getOrElse("0");
+      val _lat: String           = request.getQueryString("lat").getOrElse("0");
+           
+      val neighborhood = Tag.getNeighbourList(_lat.toDouble, _lngt.toDouble, _maxDistInMt.toDouble, result => {}, fail => {})
       val jsonArray = Json.toJson(neighborhood)
 
       val jsonObject = Json.toJson(
@@ -81,24 +75,6 @@ object TagsController extends Controller {
   }
   
   
-  
-  //  def show(id: Long) = Action {
-  ////    Tag.findById(id).map {
-  ////      tag => 
-  ////        Ok(tag.id + tag.name)
-  ////      
-  //  (request.body \ "name").asOpt[String].map { name =>
-  //    Ok(toJson(
-  //      Map("status" -> "OK", "message" -> ("Hello " + name))
-  //    ))
-  //  }.getOrElse {
-  //    BadRequest(toJson(
-  //      Map("status" -> "KO", "message" -> "Missing parameter [name]")
-  //    ))
-  //  }
-  //    
-  //    }
-
 //  def update(id: Long) = Action {
 //    request =>
 //      val body: AnyContent = request.body

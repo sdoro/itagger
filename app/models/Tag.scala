@@ -10,7 +10,7 @@ import scala.collection.mutable.ArrayBuffer
 import scala.collection.mutable.ListBuffer
 
 case class Tag(
-    id: Long,
+  id: Long,
   tagname: String,
   lngt: String = "",
   lat: String = "",
@@ -65,7 +65,6 @@ object Tag {
     }
   }
 
-  
   def update(tag: Tag, success: Tag => Unit, fail: Exception => Unit) {
     try {
       DB.withConnection { implicit c =>
@@ -107,20 +106,22 @@ object Tag {
     }
   }
 
-  def getNeighbourList(lat1: Double, lon1: Double , maxDistInMt: Double, result: ListBuffer[Tag] => Unit, fail: Exception => Unit): ListBuffer[Tag] = {
+  def getNeighbourList(lat1: Double, lon1: Double, maxDistInMt: Double, result: ListBuffer[Tag] => Unit, fail: Exception => Unit): ListBuffer[Tag] = {
     val output = new ListBuffer[Tag]
     try {
-        Tag.all.foreach(u=> {
-        var dist = maxDistInMt+1
-        Tag.calcDistInMt(lat1, lon1, u.lat.toDouble, u.lngt.toDouble, 
-            calcDist=>{
-              dist=calcDist
-            } , 
-            fail=>{
-              
+      Tag.all.foreach(u => {
+        if (u.deleted != true) {
+          var dist = maxDistInMt + 1
+          Tag.calcDistInMt(lat1, lon1, u.lat.toDouble, u.lngt.toDouble,
+            calcDist => {
+              dist = calcDist
+            },
+            fail => {
+
             })
-        if(dist<=maxDistInMt){
-          output.append(u) //only u
+          if (dist <= maxDistInMt) {
+            output.append(u) //only u
+          }
         }
       })
       result(output)
